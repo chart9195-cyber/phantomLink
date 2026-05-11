@@ -1,7 +1,7 @@
 {
   "name": "phantomlink",
   "version": "1.0.0",
-  "description": "Browser session snapshot utility for researchers",
+  "description": "Browser session snapshot utility",
   "main": "index.js",
   "type": "module",
   "dependencies": {

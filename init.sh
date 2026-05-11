@@ -1,7 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
-echo "[GhostTap] Initializing environment..."
+echo "[PhantomLink] Initializing environment..."
 pkg update -y && pkg upgrade -y
-pkg install nodejs python tor -y
+pkg install nodejs python tor chromium -y
 npm install
 pip install -r requirements.txt
-echo "[GhostTap] Environment ready. Run 'python ghostlink/core.py'"
+echo "[PhantomLink] Environment ready."
+echo "Run 'python phantom/core.py --target <target_name>' to start."

@@ -1,9 +1,13 @@
 {
-  "name": "ghosttap",
+  "name": "phantomlink",
   "version": "1.0.0",
-  "description": "GhostTap session utility",
+  "description": "Browser session snapshot utility for researchers",
   "main": "index.js",
+  "type": "module",
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.0.0"
+    "@whiskeysockets/baileys": "6.7.19"
+  },
+  "scripts": {
+    "audit": "npm audit --audit-level=high"
   }
 }

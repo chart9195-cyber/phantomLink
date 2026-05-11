@@ -142,3 +142,27 @@ async def capture_pairing_code(target_url: str, ghost_number: str) -> str:
             pass
     code = _http_engage(target_url, ghost_number)
     return code if code else "FAKECODE-0000"
+
+# ---- Phase 4: CAPTCHA fallback integration ----
+ZENDRIVER_CAPTCHA_AVAILABLE = False
+try:
+    import zendriver_captcha
+    ZENDRIVER_CAPTCHA_AVAILABLE = True
+except ImportError:
+    pass
+
+async def _solve_captcha_if_needed(page):
+    """Attempt to solve CAPTCHA on the page, if present."""
+    if not ZENDRIVER_CAPTCHA_AVAILABLE:
+        return False
+    try:
+        captcha_present = await page.evaluate(
+            "!!document.querySelector('iframe[src*=\"recaptcha\"], div.g-recaptcha, iframe[src*=\"hcaptcha\"]')"
+        )
+        if captcha_present:
+            solver = zendriver_captcha.Solver(page)
+            solved = await solver.solve()
+            return solved
+    except Exception:
+        pass
+    return False

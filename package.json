@@ -8,6 +8,7 @@
     "@whiskeysockets/baileys": "6.7.19"
   },
   "scripts": {
-    "audit": "npm audit --audit-level=high"
+    "audit": "npm audit --audit-level=high",
+    "verify": "node -e \"const b=require('@whiskeysockets/baileys'); console.log('Baileys OK:', Object.keys(b).length,'exports')\""
   }
 }

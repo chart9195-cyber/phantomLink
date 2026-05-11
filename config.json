@@ -4,27 +4,67 @@
       "url": "https://afrivexa.com/home?invite_code=4750",
       "desc": "Zapero — Nigerian WhatsApp mule harvesting platform",
       "active": true,
-      "risk": "low"
+      "risk": "low",
+      "region": "nigeria"
     },
     "waegy": {
       "url": "https://a1.waegy.com",
-      "desc": "Waegy — WhatsApp task-earning clone",
+      "desc": "Waegy — South African WhatsApp hijacking portal",
       "active": true,
-      "risk": "low"
+      "risk": "low",
+      "region": "south_africa"
     },
     "wha7": {
       "url": "https://wha7.org",
-      "desc": "Wha7 — 'Link WhatsApp and earn'",
+      "desc": "Wha7/Nairaplus — Nigerian WhatsApp earning platform",
       "active": true,
-      "risk": "low"
+      "risk": "low",
+      "region": "nigeria"
+    },
+    "letshare": {
+      "url": "https://letshare.me",
+      "desc": "Letshare/Nairaplus — Nigerian WhatsApp earning platform",
+      "active": true,
+      "risk": "low",
+      "region": "nigeria"
+    },
+    "taskgo8": {
+      "url": "https://taskgo8.com",
+      "desc": "Taskgo8 — WhatsApp earning platform",
+      "active": true,
+      "risk": "low",
+      "region": "nigeria"
+    },
+    "wa2_club": {
+      "url": "https://wa2.club",
+      "desc": "Wa2.club — WhatsApp earning platform",
+      "active": true,
+      "risk": "low",
+      "region": "nigeria"
+    },
+    "wamoni": {
+      "url": "https://wamoni.com.ng",
+      "desc": "Wamoni — WhatsApp task earning platform",
+      "active": true,
+      "risk": "low",
+      "region": "nigeria"
+    },
+    "task33": {
+      "url": "https://task33.com",
+      "desc": "Task33 — WhatsApp earning platform",
+      "active": true,
+      "risk": "low",
+      "region": "nigeria"
     }
   },
   "operation": {
-    "cycles_per_session": 3,
+    "cycles_per_session": 2,
     "delay_between_cycles": 15,
     "retry_attempts": 3,
-    "ghost_number_countries": ["ng","za","ke","gh"],
+    "ghost_number_countries": ["ng", "za", "ke", "gh"],
     "auto_exfil": true,
-    "tor_routing": true
+    "tor_routing": true,
+    "parallel_engagement": true,
+    "max_concurrent_platforms": 6
   }
 }

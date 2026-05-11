@@ -1,0 +1,9 @@
+{
+  "name": "ghosttap",
+  "version": "1.0.0",
+  "description": "GhostTap session utility",
+  "main": "index.js",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.0.0"
+  }
+}

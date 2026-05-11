@@ -1,0 +1,4 @@
+camoufox
+undetected-chromedriver
+requests
+cryptography

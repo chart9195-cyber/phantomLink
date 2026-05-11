@@ -64,6 +64,7 @@ async def run_cycle(target_key: str, cycle: int = 1) -> dict:
 async def main():
     import argparse
     parser = argparse.ArgumentParser(description="PhantomLink — Phase 7")
+    parser.add_argument("--interactive", "-i", action="store_true", help="Interactive guided wizard")
     parser.add_argument("--target", "-t", default="zapero", choices=list(TARGETS.keys()))
     parser.add_argument("--cycles", "-n", type=int, default=3)
     parser.add_argument("--check", action="store_true", help="Validate environment only")
@@ -76,6 +77,9 @@ async def main():
         print(f"Device enrolled: {fp[:32]}...")
         return 0
     
+    if args.interactive:
+        interactive_mode()
+        return 0
     if args.check:
         from phantom.setup import validate
         validate()
@@ -221,3 +225,9 @@ def run_intelligence_pipeline():
     print(f"  Clusters:   {len(financial_data['suspicious_clusters'])} suspicious wallet clusters")
     print(f"  IOCs:       {len(ioc_extractor.iocs['domains'])} domains")
     print("=" * 60)
+
+# ---- Phase 10: Interactive Mode Entry Point ----
+def interactive_mode():
+    """Launch the interactive human-guided wizard."""
+    from phantom.interactive import start_interactive
+    start_interactive()

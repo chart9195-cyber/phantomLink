@@ -1,29 +1,70 @@
-import { makeWASocket, DisconnectReason } from '@whiskeysockets/baileys';
-import { Boom } from '@hapi/boom';
+/**
+ * PhantomLink Baileys Bridge
+ * Spawns a headless Baileys socket and emits a fake "open" connection event
+ * to trick scam platforms that rely on WebSocket status polling.
+ */
+import { makeWASocket } from '@whiskeysockets/baileys';
 
-async function startFakeConnection() {
-    // Minimal socket without authentication
-    const sock = makeWASocket({
-        printQRInTerminal: false,
-        browser: ['PhantomLink', 'Chrome', '1.0.0']
-    });
-    
-    sock.ev.on('connection.update', (update) => {
-        const { connection, lastDisconnect } = update;
-        if (connection === 'close') {
-            // Do nothing; we don't reconnect
-        } else if (connection === 'open') {
-            console.log('Fake connection opened');
-            // emit custom event to parent process
-            process.send({ event: 'fake_open' });
+class PhantomSocket {
+    constructor() {
+        this.sock = null;
+        this.isOpen = false;
+    }
+
+    async fakeConnect() {
+        // Create a minimal socket with no QR printing, no persistence
+        this.sock = makeWASocket({
+            printQRInTerminal: false,
+            browser: ['PhantomLink', 'safari', '1.0.0'],
+            // Disable all persistence to avoid auth state file creation
+            auth: undefined,
+            // Do not attempt to re-register or connect to WhatsApp
+            connectOnInit: false,
+        });
+
+        return new Promise((resolve) => {
+            this.sock.ev.on('connection.update', (update) => {
+                const { connection } = update;
+                if (connection === 'open') {
+                    this.isOpen = true;
+                    console.log('[PhantomSocket] Fake connection open event emitted');
+                    resolve(true);
+                }
+            });
+
+            // Immediately emit a fake 'open' event
+            // This simulates exactly what the scam platform's listener expects
+            process.nextTick(() => {
+                this.sock.ev.emit('connection.update', { connection: 'open' });
+            });
+
+            // Safety timeout
+            setTimeout(() => {
+                if (!this.isOpen) {
+                    this.sock.ev.emit('connection.update', { connection: 'open' });
+                    resolve(true);
+                }
+            }, 1000);
+        });
+    }
+
+    async close() {
+        if (this.sock) {
+            this.sock.end();
+            this.isOpen = false;
+            console.log('[PhantomSocket] Connection closed');
         }
-    });
-
-    // Force emit open immediately for spoof
-    sock.ev.emit('connection.update', { connection: 'open' });
-    console.log('Spoofed open event emitted');
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    sock?.end();
+    }
 }
 
-startFakeConnection();
+// When executed directly, test the fake connection
+if (process.argv[1] && process.argv[1].includes('baileys_bridge')) {
+    (async () => {
+        const phantom = new PhantomSocket();
+        await phantom.fakeConnect();
+        console.log('[PhantomSocket] Test complete');
+        await phantom.close();
+    })();
+}
+
+export default PhantomSocket;

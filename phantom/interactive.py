@@ -257,3 +257,51 @@ def start_interactive():
 
 if __name__ == "__main__":
     start_interactive()
+
+# ---- Phase 3: Ghost Bridge Integration ----
+
+def step_ghost_bridge():
+    """Launch the Baileys ghost bridge for Mode 2 (Ghost Account)."""
+    import subprocess, os, time
+    
+    print("\n" + "=" * 50)
+    print("  MODE 2: GHOST BRIDGE (Baileys Auto-Accept)")
+    print("=" * 50)
+    print()
+    print("[GhostBridge] This mode uses Baileys to create a fake WhatsApp session.")
+    print("[GhostBridge] The bridge will auto-accept any pairing request from the scam platform.")
+    print("[GhostBridge] All incoming spam messages will be logged.")
+    print()
+    
+    # Get ghost number
+    from phantom.number_gen import generate_ghost_number
+    number, country = generate_ghost_number()
+    number_no_plus = number[1:]  # strip '+'
+    
+    print(f"[GhostBridge] Generated ghost number: {number} ({country})")
+    print()
+    print("[GhostBridge] Launching Baileys bridge...")
+    print("[GhostBridge] The bridge will display a pairing code.")
+    print("[GhostBridge] DO NOT enter this code in your WhatsApp — it is for reference only.")
+    print()
+    print(f"[GhostBridge] Enter this number on the scam platform: {number}")
+    print()
+    
+    # Ask for optional custom code prefix
+    prefix = input("Custom code prefix (optional, press Enter to skip): ").strip() or None
+    
+    # Launch the bridge
+    cmd = ["node", "node_scripts/ghost_bridge.cjs", number_no_plus]
+    if prefix:
+        cmd.append(prefix)
+    
+    print(f"\n[GhostBridge] Running: {' '.join(cmd)}")
+    print("[GhostBridge] Press Ctrl+C to stop the bridge when done.\n")
+    
+    try:
+        subprocess.run(cmd, check=True)
+    except KeyboardInterrupt:
+        print("\n[GhostBridge] Bridge stopped by operator.")
+    except Exception as e:
+        print(f"[GhostBridge] Bridge error: {e}")
+

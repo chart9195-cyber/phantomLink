@@ -6,6 +6,8 @@
   "type": "module",
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.19",
+    "jimp": "^1.6.1",
+    "lru-cache": "^7.14.0",
     "puppeteer-core": "^24.43.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"

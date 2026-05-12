@@ -17,15 +17,6 @@ jobs:
       - run: pip install pip-audit
       - run: pip-audit --requirement requirements.txt
 
-  zizmor:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - run: |
-          curl -LsSf https://github.com/zizmorcore/zizmor/releases/download/v1.23.0/zizmor-x86_64-unknown-linux-musl.tar.gz | tar xz
-          ./zizmor --pedantic .github/workflows/
-
-  bandit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -34,3 +25,14 @@ jobs:
           python-version: "3.12"
       - run: pip install bandit
       - run: bandit -r phantom/ -c pyproject.toml -ll
+
+  zizmor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Download latest zizmor
+        run: |
+          LATEST_URL=$(curl -s https://api.github.com/repos/zizmorcore/zizmor/releases/latest | grep browser_download_url | grep linux-musl | grep -v sha256 | head -1 | cut -d'"' -f4)
+          echo "Downloading $LATEST_URL"
+          curl -LsSf "$LATEST_URL" | tar xz
+      - run: ./zizmor --pedantic .github/workflows/

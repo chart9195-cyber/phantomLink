@@ -17,15 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
-      - name: Setup Java
-        uses: actions/setup-java@3a4f6e1af50f69e1fb80b9d6fcd201f6e3f9b9d3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Install Frida tools
-        run: pip install fritap
-
       - name: Run Android Emulator and capture
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -34,7 +25,7 @@ jobs:
           arch: x86_64
           script: |
             echo "Emulator started. Downloading APK..."
-            wget -q https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk -O zapero.apk
+            wget -q https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk -O zapero.apk || curl -sL -o zapero.apk https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk
             adb install zapero.apk
 
             echo "Starting tcpdump capture..."
@@ -45,17 +36,21 @@ jobs:
             adb shell am start -n com.zapero.app/.MainActivity
             sleep 5
 
-            # Type ghost number (replace this with actual UI interaction)
+            echo "Entering ghost number: $GHOST_NUMBER"
             adb shell input tap 500 1000
             sleep 1
-            adb shell input text "${{ inputs.ghost_number }}"
+            adb shell input text "$GHOST_NUMBER"
             sleep 1
             adb shell input tap 600 1500
-            sleep 15
+            sleep 20
 
-            # Stop capture
-            adb shell killall tcpdump
+            echo "Stopping capture..."
+            adb shell killall tcpdump || true
+            sleep 2
             adb pull /sdcard/capture.pcap ./capture.pcap
+            echo "Capture size: $(wc -c < capture.pcap) bytes"
+        env:
+          GHOST_NUMBER: ${{ inputs.ghost_number }}
 
       - name: Upload capture artifact
         uses: actions/upload-artifact@v4

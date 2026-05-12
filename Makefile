@@ -14,7 +14,7 @@ run-local:
 
 # === Tier 2a: proot-distro Alpine (fastest) ===
 install-proot-alpine:
-	proot-distro install alpine
+	# # proot-distro install alpine
 	proot-distro login alpine -- bash /data/data/com.termux/files/home/PhantomLink/PhantomLink/proot-scripts/setup-alpine.sh
 	@echo "[PhantomLink] Tier 2a (Alpine) ready."
 
@@ -29,13 +29,6 @@ install-proot-ch:
 	proot-distro login debian -- apt install nodejs npm -y
 	proot-distro login debian -- npm install -g puppeteer-extra puppeteer-extra-plugin-stealth
 	@echo "[PhantomLink] Tier 2b (chrome-headless Debian) ready."
-
-run-debian:
-	chrome-headless start --mobile
-	@read -p "Target URL: " TARGET; \
-	read -p "Ghost number (without +): " NUMBER; \
-	proot-distro login debian -- node /data/data/com.termux/files/home/PhantomLink/PhantomLink/proot-scripts/intercept.cjs "$$TARGET" "$$NUMBER"
-	chrome-headless stop
 
 # === Tier 3: GitHub Actions Cloud ===
 run-cloud:
@@ -69,3 +62,9 @@ panic:
 
 demo:
 	python -m phantom.interactive
+run-debian:
+	chrome-headless start --mobile
+	@read -p "Target URL: " TARGET; \
+	read -p "Ghost number (without +): " NUMBER; \
+	proot-distro login debian -- bash -c "cd /data/data/com.termux/files/home/PhantomLink/PhantomLink && node proot-scripts/intercept-connect.cjs \"$$TARGET\" \"$$NUMBER\""
+	chrome-headless stop

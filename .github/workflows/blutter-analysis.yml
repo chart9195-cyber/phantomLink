@@ -15,10 +15,15 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Blutter and dependencies
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcapstone-dev
+
+      - name: Install Blutter and Python packages
         run: |
           git clone https://github.com/worawit/blutter.git
-          pip install pyelftools capstone requests
+          pip install pyelftools requests
 
       - name: Download APK and extract ARM64 .so files
         run: |
@@ -26,9 +31,8 @@ jobs:
           mkdir -p libs
           unzip -j zapero.apk "lib/arm64-v8a/libapp.so" -d libs/
           unzip -j zapero.apk "lib/arm64-v8a/libflutter.so" -d libs/
-          ls -la libs/
 
-      - name: Run Blutter on ARM64 libraries
+      - name: Run Blutter
         run: |
           python blutter/blutter.py libs blutter_output
 

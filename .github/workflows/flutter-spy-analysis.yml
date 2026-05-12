@@ -1,0 +1,37 @@
+name: Flutter-Spy APK Analysis
+
+on:
+  workflow_dispatch:
+
+jobs:
+  spy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y jadx zip unzip
+
+      - name: Clone and install Flutter-Spy
+        run: |
+          git clone https://github.com/AbhiTheModder/flutter-spy.git
+          cd flutter-spy
+          chmod +x INSTALLER.sh
+          ./INSTALLER.sh
+
+      - name: Download APK and run Flutter-Spy
+        run: |
+          wget -q https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk -O zapero.apk
+          cd flutter-spy
+          ./flutter-spy ../zapero.apk
+          mkdir -p output
+          mv *.json *.txt output/ 2>/dev/null || true
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-spy-results
+          path: flutter-spy/output/

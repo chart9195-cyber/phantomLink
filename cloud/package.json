@@ -1,0 +1,28 @@
+{
+  "name": "phantomlink-cloud",
+  "version": "1.0.0",
+  "description": "PhantomLink — Cloud‑Native Ghost Fleet",
+  "scripts": {
+    "dev": "concurrently \"npm run api\" \"npm run worker\" \"npm run dashboard\"",
+    "api": "cd api && python -m uvicorn main:app --host 0.0.0.0 --port 8000",
+    "worker": "cd workers && node index.js",
+    "dashboard": "cd dashboard && npm run dev"
+  },
+  "dependencies": {
+    "@rizzxdc/baileys": "^8.0.10",
+    "@whiskeysockets/baileys": "^6.7.19",
+    "express": "^4.21.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "winston": "^3.14.0",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.0",
+    "bullmq": "^5.0.0",
+    "ioredis": "^5.4.0",
+    "pg": "^8.13.0",
+    "axios": "^1.7.0",
+    "puppeteer-extra": "^3.3.0",
+    "puppeteer-extra-plugin-stealth": "^2.11.0",
+    "playwright": "^1.48.0"
+  }
+}

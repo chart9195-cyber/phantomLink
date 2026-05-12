@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  api:
+    build: ./api
+    ports: ["8000:8000"]
+    environment:
+      - DATABASE_URL=postgresql://phantom:phantom@db:5432/phantomlink
+      - REDIS_URL=redis://redis:6379
+    depends_on: [db, redis]
+
+  worker:
+    build: ./workers
+    ports: ["8001:8001"]
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on: [redis]
+
+  dashboard:
+    image: nginx:alpine
+    ports: ["8080:80"]
+    volumes:
+      - ./dashboard:/usr/share/nginx/html
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: phantom
+      POSTGRES_PASSWORD: phantom
+      POSTGRES_DB: phantomlink
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redisdata:/data
+
+volumes:
+  pgdata:
+  redisdata:

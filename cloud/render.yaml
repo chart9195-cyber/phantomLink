@@ -1,0 +1,30 @@
+services:
+  # REST API Server (Python FastAPI)
+  - type: web
+    name: phantomlink-api
+    env: python
+    buildCommand: pip install fastapi uvicorn httpx
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port 8000
+    plan: free
+
+  # WhatsApp Worker (Node.js)
+  - type: worker
+    name: phantomlink-worker
+    env: node
+    buildCommand: npm install
+    startCommand: node workers/index.js
+    plan: free
+
+  # Dashboard (Static Site)
+  - type: static
+    name: phantomlink-dashboard
+    buildCommand: echo "Static dashboard ready"
+    publishPath: dashboard
+    plan: free
+
+databases:
+  - name: phantomlink-db
+    plan: free
+
+  - name: phantomlink-redis
+    plan: free

@@ -18,18 +18,12 @@ jobs:
       - name: Install Blutter and dependencies
         run: |
           git clone https://github.com/worawit/blutter.git
-          pip install pyelftools capstone
-
-      - name: Extract libraries from APK
-        run: |
-          mkdir -p libs
-          # Copy your APK from the recon_zapero directory (you'll upload it manually in next step)
-          # We'll use a placeholder; you'll download the APK from the artifact
-          # For now, we'll just prepare the directory
+          pip install pyelftools capstone requests
 
       - name: Download APK and extract .so files
         run: |
           wget -q https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk -O zapero.apk
+          mkdir -p libs
           unzip -j zapero.apk "lib/armeabi-v7a/libapp.so" "lib/armeabi-v7a/libflutter.so" -d libs/
 
       - name: Run Blutter

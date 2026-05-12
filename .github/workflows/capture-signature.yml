@@ -20,23 +20,22 @@ jobs:
       - name: Run Android Emulator and capture
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
+          api-level: 30
+          arch: arm64-v8a
           script: |
             echo "Emulator started. Downloading APK..."
-            wget -q https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk -O zapero.apk || curl -sL -o zapero.apk https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk
-            adb install zapero.apk
+            curl -sL -o zapero.apk https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk
+            adb install -g zapero.apk
 
             echo "Starting tcpdump capture..."
             adb root
             adb shell tcpdump -i any -w /sdcard/capture.pcap &
 
-            echo "Opening app..."
+            echo "Launching app..."
             adb shell am start -n com.zapero.app/.MainActivity
             sleep 5
 
-            echo "Entering ghost number: $GHOST_NUMBER"
+            echo "Typing ghost number: $GHOST_NUMBER"
             adb shell input tap 500 1000
             sleep 1
             adb shell input text "$GHOST_NUMBER"

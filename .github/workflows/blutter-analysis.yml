@@ -1,0 +1,50 @@
+name: Blutter APK Analysis
+
+on:
+  workflow_dispatch:
+
+jobs:
+  blutter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b
+        with:
+          python-version: '3.12'
+
+      - name: Install Blutter and dependencies
+        run: |
+          git clone https://github.com/worawit/blutter.git
+          pip install pyelftools capstone
+
+      - name: Extract libraries from APK
+        run: |
+          mkdir -p libs
+          # Copy your APK from the recon_zapero directory (you'll upload it manually in next step)
+          # We'll use a placeholder; you'll download the APK from the artifact
+          # For now, we'll just prepare the directory
+
+      - name: Download APK and extract .so files
+        run: |
+          wget -q https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk -O zapero.apk
+          unzip -j zapero.apk "lib/armeabi-v7a/libapp.so" "lib/armeabi-v7a/libflutter.so" -d libs/
+
+      - name: Run Blutter
+        run: |
+          python blutter/blutter.py libs blutter_output
+
+      - name: Search for API endpoints
+        run: |
+          grep -rE "(https?://|wss?://)[^\"' ]*(confirm|validate|verify|link|pairing|code|whatsapp)" blutter_output/ > api_endpoints.txt || echo "No endpoints found" > api_endpoints.txt
+          cat api_endpoints.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: blutter-results
+          path: |
+            blutter_output/
+            api_endpoints.txt

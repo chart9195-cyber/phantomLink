@@ -1,0 +1,95 @@
+=== API Endpoints ===
+blutter_output/objs.txt:  off_10: "http://www.w3.org/1999/xlink"
+blutter_output/objs.txt:  off_10: "http://www.w3.org/1999/xlink"
+blutter_output/objs.txt:  off_10: "http://www.w3.org/1999/xlink"
+blutter_output/objs.txt:  off_10: "http://www.w3.org/1999/xlink"
+blutter_output/objs.txt:  off_10: "http://www.w3.org/1999/xlink"
+blutter_output/objs.txt:  off_10: "http://www.w3.org/1999/xlink"
+blutter_output/objs.txt:  off_10: "http://www.w3.org/1999/xlink"
+blutter_output/pp.txt:[pp+0x17790] String: "https://web.whatsapp.com"
+blutter_output/pp.txt:[pp+0x35358] String: "http://www.w3.org/1999/xlink"
+blutter_output/ida_script/addNames.py:	ida_struct.set_member_cmt(ida_struct.get_member(struc, 217944), '''String: "http://www.w3.org/1999/xlink"''', True)
+blutter_output/ida_script/addNames.py:	ida_struct.set_member_cmt(ida_struct.get_member(struc, 96144), '''String: "https://web.whatsapp.com"''', True)
+blutter_output/asm/task/widget/platform_webview.dart:    // 0x669540: r0 = "https://web.whatsapp.com"
+blutter_output/asm/task/widget/platform_webview.dart:    //     0x669540: add             x0, PP, #0x17, lsl #12  ; [pp+0x17790] "https://web.whatsapp.com"
+blutter_output/asm/task/widget/platform_webview.dart:    // 0x6a9e40: r16 = "https://web.whatsapp.com"
+blutter_output/asm/task/widget/platform_webview.dart:    //     0x6a9e40: add             x16, PP, #0x17, lsl #12  ; [pp+0x17790] "https://web.whatsapp.com"
+blutter_output/asm/task/screens/home_task/app_platform_page.dart:    // 0x81a6f0: r0 = "https://web.whatsapp.com"
+blutter_output/asm/task/screens/home_task/app_platform_page.dart:    //     0x81a6f0: add             x0, PP, #0x17, lsl #12  ; [pp+0x17790] "https://web.whatsapp.com"
+blutter_output/asm/html/src/constants.dart:    // 0x759a44: r16 = "http://www.w3.org/1999/xlink"
+blutter_output/asm/html/src/constants.dart:    //     0x759a44: add             x16, PP, #0x35, lsl #12  ; [pp+0x35358] "http://www.w3.org/1999/xlink"
+
+=== All URLs ===
+blutter_output/asm/dio/src/dio_exception.dart:https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+blutter_output/asm/firebase_core_platform_interface/firebase_core_platform_interface.dart:https://firebase.google.com/docs/flutter/setup
+blutter_output/asm/flutter/src/material/scaffold.dart:https://api.flutter.dev/flutter/material/Scaffold/of.html
+blutter_output/asm/flutter/src/material/tooltip.dart:https://github.com/dart-lang/language/issues/3488
+blutter_output/asm/flutter/src/painting/text_painter.dart:https://github.com/dart-lang/language/issues/3488
+blutter_output/asm/flutter/src/rendering/paragraph.dart:https://github.com/dart-lang/language/issues/3488
+blutter_output/asm/flutter/src/widgets/scroll_position.dart:https://github.com/dart-lang/language/issues/3488
+blutter_output/asm/flutter/src/widgets/text.dart:https://github.com/dart-lang/language/issues/3488
+blutter_output/asm/html/dom.dart:http://www.w3.org/1998/Math/MathML
+blutter_output/asm/html/dom.dart:http://www.w3.org/1999/xhtml
+blutter_output/asm/html/dom.dart:http://www.w3.org/2000/svg
+blutter_output/asm/html/parser.dart:http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd
+blutter_output/asm/html/parser.dart:http://www.w3.org/1998/Math/MathML
+blutter_output/asm/html/parser.dart:http://www.w3.org/1999/xhtml
+blutter_output/asm/html/parser.dart:http://www.w3.org/2000/svg
+blutter_output/asm/html/src/constants.dart:http://www.w3.org/1998/Math/MathML
+blutter_output/asm/html/src/constants.dart:http://www.w3.org/1999/xhtml
+blutter_output/asm/html/src/constants.dart:http://www.w3.org/1999/xlink
+blutter_output/asm/html/src/constants.dart:http://www.w3.org/2000/svg
+blutter_output/asm/html/src/constants.dart:http://www.w3.org/2000/xmlns/
+blutter_output/asm/html/src/constants.dart:http://www.w3.org/XML/1998/namespace
+blutter_output/asm/html/src/tokenizer.dart:http://www.w3.org/1999/xhtml
+blutter_output/asm/html/src/treebuilder.dart:http://www.w3.org/1999/xhtml
+blutter_output/asm/task/helper/Ahelper.dart:https://play.google.com/store/apps/details
+blutter_output/asm/task/helper/constants.dart:https://gapi-dev.waga.la/api/app
+blutter_output/asm/task/screens/game/game_view.dart:https://dev-a01.kapok.net/hk/
+blutter_output/asm/task/screens/home_task/app_platform_page.dart:https://web.whatsapp.com
+blutter_output/asm/task/screens/video_verify/video_verify_view.dart:https://translate.google
+blutter_output/asm/task/widget/platform_webview.dart:https://web.whatsapp.com
+blutter_output/ida_script/addNames.py:http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd
+blutter_output/ida_script/addNames.py:http://www.w3.org/1998/Math/MathML
+blutter_output/ida_script/addNames.py:http://www.w3.org/1999/xhtml
+blutter_output/ida_script/addNames.py:http://www.w3.org/1999/xlink
+blutter_output/ida_script/addNames.py:http://www.w3.org/2000/svg
+blutter_output/ida_script/addNames.py:http://www.w3.org/2000/xmlns/
+blutter_output/ida_script/addNames.py:http://www.w3.org/XML/1998/namespace
+blutter_output/ida_script/addNames.py:https://api.flutter.dev/flutter/dart-ui/ChannelBuffers-class.html
+blutter_output/ida_script/addNames.py:https://api.flutter.dev/flutter/material/Scaffold/of.html
+blutter_output/ida_script/addNames.py:https://dev-a01.kapok.net/hk/
+blutter_output/ida_script/addNames.py:https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+blutter_output/ida_script/addNames.py:https://firebase.google.com/docs/flutter/setup
+blutter_output/ida_script/addNames.py:https://flutter.dev/docs/release/breaking-changes/network-policy-ios-android.
+blutter_output/ida_script/addNames.py:https://gapi-dev.waga.la/api/app
+blutter_output/ida_script/addNames.py:https://github.com/dart-lang/language/issues/3488
+blutter_output/ida_script/addNames.py:https://github.com/flutter/flutter/issues/new.
+blutter_output/ida_script/addNames.py:https://play.google.com/store/apps/details
+blutter_output/ida_script/addNames.py:https://translate.google
+blutter_output/ida_script/addNames.py:https://web.whatsapp.com
+blutter_output/objs.txt:http://www.w3.org/1998/Math/MathML
+blutter_output/objs.txt:http://www.w3.org/1999/xhtml
+blutter_output/objs.txt:http://www.w3.org/1999/xlink
+blutter_output/objs.txt:http://www.w3.org/2000/svg
+blutter_output/objs.txt:http://www.w3.org/2000/xmlns/
+blutter_output/objs.txt:http://www.w3.org/XML/1998/namespace
+blutter_output/pp.txt:http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd
+blutter_output/pp.txt:http://www.w3.org/1998/Math/MathML
+blutter_output/pp.txt:http://www.w3.org/1999/xhtml
+blutter_output/pp.txt:http://www.w3.org/1999/xlink
+blutter_output/pp.txt:http://www.w3.org/2000/svg
+blutter_output/pp.txt:http://www.w3.org/2000/xmlns/
+blutter_output/pp.txt:http://www.w3.org/XML/1998/namespace
+blutter_output/pp.txt:https://api.flutter.dev/flutter/dart-ui/ChannelBuffers-class.html
+blutter_output/pp.txt:https://api.flutter.dev/flutter/material/Scaffold/of.html
+blutter_output/pp.txt:https://dev-a01.kapok.net/hk/
+blutter_output/pp.txt:https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+blutter_output/pp.txt:https://firebase.google.com/docs/flutter/setup
+blutter_output/pp.txt:https://flutter.dev/docs/release/breaking-changes/network-policy-ios-android.
+blutter_output/pp.txt:https://gapi-dev.waga.la/api/app
+blutter_output/pp.txt:https://github.com/dart-lang/language/issues/3488
+blutter_output/pp.txt:https://github.com/flutter/flutter/issues/new.
+blutter_output/pp.txt:https://play.google.com/store/apps/details
+blutter_output/pp.txt:https://translate.google
+blutter_output/pp.txt:https://web.whatsapp.com

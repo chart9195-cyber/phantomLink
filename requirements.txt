@@ -14,4 +14,3 @@ fake-useragent>=2.0.0
 python-dotenv>=1.0.0
 luhnpy>=0.1.0
 rich>=13.0.0
-zendriver-captcha>=0.1.0

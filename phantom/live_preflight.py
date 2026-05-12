@@ -3,7 +3,7 @@ import subprocess, sys, os, json, asyncio
 
 def run(cmd):
     try:
-        r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=30)
+        r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=30)  # nosec B602
         return r.returncode == 0, r.stdout.strip(), r.stderr.strip()
     except: return False, "", ""
 

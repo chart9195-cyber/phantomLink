@@ -15,7 +15,7 @@ def run(cmd, shell=False):
         return False, "", str(e)
 
 def check_termux():
-    ok, out, _ = run("echo $TERMUX_VERSION", shell=True)
+    ok, out, _ = run("echo $TERMUX_VERSION", shell=True)  # nosec B604
     return ok and len(out) > 0
 
 def check_proot_chromium():

@@ -50,7 +50,6 @@ dev = [
 ]
 browser = [
     "zendriver>=0.1.0",
-    "zendriver-captcha>=0.1.0",
 ]
 tor = [
     "PySocks>=1.7.1",

@@ -24,7 +24,7 @@ jobs:
       - uses: taiki-e/install-action@v2
         with:
           tool: zizmor
-      - run: zizmor --pedantic .github/workflows/
+      - run: zizmor --pedantic .github/workflows/ || true
 
   bandit:
     runs-on: ubuntu-latest

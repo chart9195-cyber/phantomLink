@@ -20,19 +20,25 @@ jobs:
           git clone https://github.com/worawit/blutter.git
           pip install pyelftools capstone requests
 
-      - name: Download APK and extract .so files
+      - name: Download APK and extract ARM64 .so files
         run: |
           wget -q https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk -O zapero.apk
           mkdir -p libs
-          unzip -j zapero.apk "lib/armeabi-v7a/libapp.so" "lib/armeabi-v7a/libflutter.so" -d libs/
+          unzip -j zapero.apk "lib/arm64-v8a/libapp.so" -d libs/
+          unzip -j zapero.apk "lib/arm64-v8a/libflutter.so" -d libs/
+          ls -la libs/
 
-      - name: Run Blutter
+      - name: Run Blutter on ARM64 libraries
         run: |
           python blutter/blutter.py libs blutter_output
 
       - name: Search for API endpoints
         run: |
-          grep -rE "(https?://|wss?://)[^\"' ]*(confirm|validate|verify|link|pairing|code|whatsapp)" blutter_output/ > api_endpoints.txt || echo "No endpoints found" > api_endpoints.txt
+          echo "=== API Endpoints ===" > api_endpoints.txt
+          grep -rE "(https?://|wss?://)[^\"' ]*(confirm|validate|verify|link|pairing|code|whatsapp)" blutter_output/ >> api_endpoints.txt || echo "No endpoints found" >> api_endpoints.txt
+          echo "" >> api_endpoints.txt
+          echo "=== All URLs ===" >> api_endpoints.txt
+          grep -rEo "https?://[a-zA-Z0-9._/-]+" blutter_output/ 2>/dev/null | sort -u >> api_endpoints.txt || echo "No URLs" >> api_endpoints.txt
           cat api_endpoints.txt
 
       - name: Upload artifacts

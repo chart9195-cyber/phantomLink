@@ -22,12 +22,13 @@ jobs:
           cd flutter-spy
           chmod +x INSTALLER.sh
           ./INSTALLER.sh
+          # The installer puts the binary into the current directory
+          echo "$(pwd)" >> $GITHUB_PATH
 
       - name: Download APK and run Flutter-Spy
         run: |
           wget -q https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk -O zapero.apk
-          cd flutter-spy
-          ./flutter-spy ../zapero.apk
+          flutter-spy zapero.apk
           mkdir -p output
           mv *.json *.txt output/ 2>/dev/null || true
 
@@ -35,4 +36,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flutter-spy-results
-          path: flutter-spy/output/
+          path: output/

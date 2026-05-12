@@ -1,0 +1,48 @@
+name: JADX APK Analysis
+
+on:
+  workflow_dispatch:
+
+jobs:
+  jadx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Install Java (required by jadx)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download jadx
+        run: |
+          curl -L -o jadx.zip https://github.com/skylot/jadx/releases/download/v1.5.4/jadx-1.5.4.zip
+          unzip -q jadx.zip -d jadx
+          chmod +x jadx/bin/jadx
+
+      - name: Download APK and decompile
+        run: |
+          wget -q https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk -O zapero.apk
+          jadx/bin/jadx -d zapero_src zapero.apk
+
+      - name: Extract API endpoints, URLs, secrets
+        run: |
+          echo "=== API Endpoints ===" > findings.txt
+          grep -rEo "https?://[a-zA-Z0-9._/-]*(api|confirm|validate|verify|link|pairing|code|whatsapp)[a-zA-Z0-9._/-]*" zapero_src/ 2>/dev/null | sort -u >> findings.txt
+          echo "" >> findings.txt
+          echo "=== All URLs ===" >> findings.txt
+          grep -rEo "https?://[a-zA-Z0-9._/-]+" zapero_src/ 2>/dev/null | sort -u >> findings.txt
+          echo "" >> findings.txt
+          echo "=== Secrets & Keys ===" >> findings.txt
+          grep -rEo "(api[_-]?key|secret|token|bearer|auth)=?[A-Za-z0-9_.-]+" zapero_src/ 2>/dev/null | sort -u >> findings.txt
+          cat findings.txt
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: jadx-results
+          path: |
+            findings.txt
+            zapero_src/

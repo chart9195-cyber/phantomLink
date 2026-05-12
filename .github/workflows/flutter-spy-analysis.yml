@@ -10,10 +10,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
-      - name: Install dependencies
+      - name: Install jadx
         run: |
-          sudo apt update
-          sudo apt install -y jadx zip unzip
+          curl -L -o jadx.zip https://github.com/skylot/jadx/releases/download/v1.5.4/jadx-1.5.4.zip
+          unzip jadx.zip -d jadx_dir
+          echo "$(pwd)/jadx_dir/bin" >> $GITHUB_PATH
 
       - name: Clone and install Flutter-Spy
         run: |

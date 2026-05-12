@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.19",
+    "@whiskeysockets/baileys": "^6.7.21",
     "jimp": "^1.6.1",
     "lru-cache": "^7.14.0",
     "puppeteer-core": "^24.43.1",

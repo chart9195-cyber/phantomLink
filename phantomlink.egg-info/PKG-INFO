@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: phantomlink
+Version: 1.0.0
+Summary: PhantomLink — Operational toolkit for security research and knowledge verification
+Author: PhantomLink Research
+License: MIT
+Project-URL: Homepage, https://github.com/chart9195-cyber/PhantomLink
+Project-URL: Repository, https://github.com/chart9195-cyber/PhantomLink.git
+Project-URL: Issues, https://github.com/chart9195-cyber/PhantomLink/issues
+Keywords: security,research,whatsapp,anti-fraud,osint
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: Android
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Security
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: rich>=13.0.0
+Requires-Dist: httpx>=0.28.0
+Requires-Dist: requests>=2.32.0
+Requires-Dist: beautifulsoup4>=4.12.0
+Requires-Dist: lxml>=5.3.0
+Requires-Dist: cryptography>=44.0.0
+Requires-Dist: curl-cffi>=0.15.0
+Requires-Dist: fake-useragent>=2.0.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: luhnpy>=0.1.0
+Requires-Dist: websockets>=14.0.0
+Requires-Dist: aiohttp>=3.11.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: pytest-cov>=5.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.24; extra == "dev"
+Requires-Dist: ruff>=0.8; extra == "dev"
+Requires-Dist: mypy>=1.13; extra == "dev"
+Requires-Dist: nox>=2024; extra == "dev"
+Provides-Extra: browser
+Requires-Dist: zendriver>=0.1.0; extra == "browser"
+Requires-Dist: zendriver-captcha>=0.1.0; extra == "browser"
+Provides-Extra: tor
+Requires-Dist: PySocks>=1.7.1; extra == "tor"
+Requires-Dist: stem>=1.8.0; extra == "tor"
+
+# PhantomLink
+
+A lightweight, open-source Android utility for saving, managing, and restoring browser tab sessions.  
+Designed for researchers and privacy-conscious users.
+
+## Features
+- Session snapshot and restore
+- Tab grouping and labeling
+- Local encrypted storage
+
+*Currently under active development.*

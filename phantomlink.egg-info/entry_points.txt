@@ -1,0 +1,2 @@
+[console_scripts]
+phantomlink = phantom.cli:main

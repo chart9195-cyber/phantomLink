@@ -74,7 +74,7 @@ def _rotate_via_subprocess():
     return False
 
 def get_proxy_config():
-    """Return SOCKS proxy configuration for httpx/curl-cffi."""
+    """Return SOCKS proxy configuration for HTTP clients."""
     return {"socks5": TOR_SOCKS_PROXY} if ensure_tor_running() else {}
 
 def get_circuit_stats():

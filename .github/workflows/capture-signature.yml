@@ -1,0 +1,64 @@
+name: Capture Zapero Signature
+
+on:
+  workflow_dispatch:
+    inputs:
+      ghost_number:
+        description: 'Ghost number (E.164 without +)'
+        required: true
+        default: '2348098765432'
+
+jobs:
+  capture:
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Java
+        uses: actions/setup-java@3a4f6e1af50f69e1fb80b9d6fcd201f6e3f9b9d3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Frida tools
+        run: pip install fritap
+
+      - name: Run Android Emulator and capture
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          script: |
+            echo "Emulator started. Downloading APK..."
+            wget -q https://dl.banglio.com/apk/nigeria-3.5.3-batch.apk -O zapero.apk
+            adb install zapero.apk
+
+            echo "Starting tcpdump capture..."
+            adb root
+            adb shell tcpdump -i any -w /sdcard/capture.pcap &
+
+            echo "Opening app..."
+            adb shell am start -n com.zapero.app/.MainActivity
+            sleep 5
+
+            # Type ghost number (replace this with actual UI interaction)
+            adb shell input tap 500 1000
+            sleep 1
+            adb shell input text "${{ inputs.ghost_number }}"
+            sleep 1
+            adb shell input tap 600 1500
+            sleep 15
+
+            # Stop capture
+            adb shell killall tcpdump
+            adb pull /sdcard/capture.pcap ./capture.pcap
+
+      - name: Upload capture artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zapero-capture
+          path: capture.pcap

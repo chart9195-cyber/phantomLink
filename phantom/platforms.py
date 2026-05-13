@@ -4,6 +4,10 @@ from dataclasses import dataclass, field
 from typing import Optional
 try:
     from curl_cffi import requests as cffi_requests
+except (ImportError, ModuleNotFoundError):
+    import requests
+    cffi_requests = requests
+    from curl_cffi import requests as cffi_requests
 except ImportError:
     import requests as cffi_requests
 

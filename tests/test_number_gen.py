@@ -12,4 +12,4 @@ def test_generate_unique_numbers():
     for _ in range(100):
         n, _ = generate_ghost_number()
         numbers.add(n)
-    assert len(numbers) >= 95  # Should be mostly unique
+    assert len(numbers) >= 95

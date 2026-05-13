@@ -2,14 +2,7 @@
 import re
 from dataclasses import dataclass, field
 from typing import Optional
-try:
-    from curl_cffi import requests as cffi_requests
-except (ImportError, ModuleNotFoundError):
-    import requests
-    cffi_requests = requests
-    from curl_cffi import requests as cffi_requests
-except ImportError:
-    import requests as cffi_requests
+import requests
 
 @dataclass
 class Platform:
@@ -78,17 +71,12 @@ PLATFORM_CATALOG = {
 def fingerprint_platform(url: str) -> Platform:
     """Auto-detect platform type from HTML fingerprinting."""
     try:
-        resp = cffi_requests.get(url, impersonate="chrome110", timeout=15,
-                                 headers={"User-Agent":"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36"})
+        resp = requests.get(url, timeout=15,
+                            headers={"User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36"})
         html = resp.text
-        # Extract platform name hints
-        title_match = re.search(r'<title>([^<]+)</title>', html, re.IGNORECASE)
-        title = title_match.group(1) if title_match else ""
-        # Match against known catalog
         for key, plat in PLATFORM_CATALOG.items():
             if plat.url.split("/")[2] in url:
                 return plat
-        # Generic platform fingerprinting
         platform = Platform(name="generic", url=url)
         for pattern in platform.api_patterns:
             matches = re.findall(pattern, html)
@@ -112,6 +100,5 @@ def list_platforms():
     print("  PhantomLink Platform Catalog")
     print("=" * 60)
     for key, plat in PLATFORM_CATALOG.items():
-        endpoint = plat.confirm_endpoint or "auto-detect"
         print(f"  {key:15s} | {plat.region:15s} | {plat.url}")
     print("=" * 60)

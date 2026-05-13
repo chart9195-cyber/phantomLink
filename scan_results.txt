@@ -1,0 +1,80 @@
+Scanning afrivexa.com...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning a1.waegy.com...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning wha7.org...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning letshare.me...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning taskgo8.com...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning wa2.club...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning wamoni.com.ng...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning task33.com...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning waplus.com...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning naijapay.com.ng...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning diy22.cc...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning mk8club.com...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning ttask.vip...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning taskpay.site...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning buzzbread.com...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'
+Scanning znnns.vip...
+Traceback (most recent call last):
+  File "/data/data/com.termux/files/home/PhantomLink/PhantomLink/phantom/scanner.py", line 5, in <module>
+    from curl_cffi import requests as cffi_requests
+ModuleNotFoundError: No module named 'curl_cffi'

@@ -90,3 +90,12 @@ ignore_missing_imports = true
 [tool.coverage.run]
 source = ["phantom"]
 omit = ["tests/*", "*/node_scripts/*"]
+
+[tool.ruff.lint]
+extend-ignore = [
+    "E501",   # line too long
+    "E722",   # bare except
+    "E701",   # multiple statements on one line
+    "F841",   # unused variable
+    "F821",   # undefined name (false positive from unused old modules)
+]

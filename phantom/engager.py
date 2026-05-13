@@ -1,11 +1,13 @@
 """PhantomLink Phase 7 — Engagement Module with Human Behavior Simulation"""
 import asyncio
+import random
 import re
 import subprocess
+
 from curl_cffi import requests as cffi_requests
+
+from phantom.behavior import human_delay, human_scroll, simulate_presence
 from phantom.fingerprint import get_random_profile
-from phantom.behavior import simulate_presence, human_type, human_scroll, human_delay
-from phantom.resilience import retry_with_backoff, tripwire
 
 ZENDRIVER_AVAILABLE = False
 try:
@@ -46,19 +48,19 @@ async def _zendriver_engage(target_url: str, ghost_number: str) -> dict:
     """Full engagement with human behavior simulation."""
     if not ZENDRIVER_AVAILABLE or not ensure_chromium():
         return {"success": False, "pairing_code": None, "error": "zendriver/chromium not available"}
-    
+
     result = {"success": False, "pairing_code": None, "error": None, "network_log": [], "html_snippet": ""}
-    
+
     try:
         browser = await zd.start(host="127.0.0.1", port=CHROME_HEADLESS_PORT, headless=True, sandbox=False)
         page = await browser.get(target_url)
-        
+
         # ---- Phase 7: Human presence simulation after page load ----
         await simulate_presence(page)
-        
+
         # Log network requests
         page.on("request", lambda r: result["network_log"].append({"url": r.url, "method": r.method}))
-        
+
         # Enter phone number with human typing
         selectors = [
             'input[type="tel"]', 'input[placeholder*="phone" i]',
@@ -80,14 +82,14 @@ async def _zendriver_engage(target_url: str, ghost_number: str) -> dict:
                     break
             except Exception:
                 continue
-        
+
         if not entered:
             result["error"] = "Could not find number input"
             await browser.stop()
             return result
-        
+
         await asyncio.sleep(human_delay(300, 800))
-        
+
         # Click submit button with human mouse movement
         btn_selectors = [
             'button:has-text("Link")', 'button:has-text("Submit")',
@@ -106,17 +108,17 @@ async def _zendriver_engage(target_url: str, ghost_number: str) -> dict:
                     break
             except Exception:
                 continue
-        
+
         # Wait for pairing code
         await asyncio.sleep(5)
-        
+
         # Small scroll to show we're "reading" the page
         await human_scroll(page, delta_y=random.randint(100, 300))
         await asyncio.sleep(2)
-        
+
         html = await page.get_content()
         result["html_snippet"] = html[:1000]
-        
+
         for pattern in CODE_PATTERNS:
             match = re.search(pattern, html, re.IGNORECASE)
             if match:
@@ -125,10 +127,10 @@ async def _zendriver_engage(target_url: str, ghost_number: str) -> dict:
                     result["pairing_code"] = code
                     result["success"] = True
                     break
-        
+
         if not result["success"]:
             result["error"] = "No pairing code found in response"
-        
+
         await browser.stop()
         return result
     except Exception as e:
@@ -160,7 +162,7 @@ def _http_engage(target_url: str, ghost_number: str) -> dict:
         result["error"] = str(e)
         return result
 
-import random  # backstop
+
 
 async def capture_pairing_code(target_url: str, ghost_number: str) -> str:
     """Primary: Zendriver + behavioral simulation. Fallback: HTTP."""
@@ -173,6 +175,6 @@ async def capture_pairing_code(target_url: str, ghost_number: str) -> str:
                 print(f"[Engage] Zendriver: {result['error']}")
         except Exception as e:
             print(f"[Engage] Zendriver exception: {e}")
-    
+
     result = _http_engage(target_url, ghost_number)
     return result.get("pairing_code", "FAKECODE-0000")

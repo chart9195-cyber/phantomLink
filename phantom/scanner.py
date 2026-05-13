@@ -1,7 +1,7 @@
 """PhantomLink Phase 8 — Platform Discovery Scanner"""
 import re
-import asyncio
 from datetime import datetime
+
 from curl_cffi import requests as cffi_requests
 
 SCAM_INDICATORS = [
@@ -67,7 +67,8 @@ def scan_batch(urls: list) -> list:
     return [scan_url(url) for url in urls]
 
 if __name__ == "__main__":
-    import sys, json
+    import json
+    import sys
     if len(sys.argv) > 1:
         result = scan_url(sys.argv[1])
         print(json.dumps(result, indent=2))

@@ -5,7 +5,7 @@ from datetime import datetime
 
 ZENDRIVER_OK = False
 try:
-    from zendriver import start, Config
+    from zendriver import Config, start
     ZENDRIVER_OK = True
 except: pass
 
@@ -22,7 +22,7 @@ async def engage_zapero(ghost_number: str) -> dict:
     """Connect to chrome-headless, navigate Zapero, enter ghost number, capture code."""
     if not ZENDRIVER_OK:
         return {"success": False, "error": "zendriver not installed"}
-    
+
     result = {
         "success": False,
         "pairing_code": None,
@@ -31,7 +31,7 @@ async def engage_zapero(ghost_number: str) -> dict:
         "network_log": [],
         "html_snippet": "",
     }
-    
+
     try:
         config = Config(
             host="127.0.0.1",
@@ -43,12 +43,12 @@ async def engage_zapero(ghost_number: str) -> dict:
         browser = await start(config=config)
         page = await browser.get("https://afrivexa.com/home?invite_code=4750")
         await asyncio.sleep(3)
-        
+
         # Log all outgoing requests
         page.on("request", lambda r: result["network_log"].append({
             "url": r.url, "method": r.method
         }))
-        
+
         # Step 1: Enter phone number
         input_selectors = [
             'input[type="tel"]', 'input[type="text"]',
@@ -65,12 +65,12 @@ async def engage_zapero(ghost_number: str) -> dict:
                     entered = True
                     break
             except: continue
-        
+
         if not entered:
             result["error"] = "Could not find number input"
             await browser.stop()
             return result
-        
+
         # Step 2: Click submit button
         btn_selectors = [
             'button:has-text("Link")', 'button:has-text("Submit")',
@@ -86,17 +86,17 @@ async def engage_zapero(ghost_number: str) -> dict:
                     clicked = True
                     break
             except: continue
-        
+
         if not clicked:
             result["error"] = "Could not find submit button"
             await browser.stop()
             return result
-        
+
         # Step 3: Wait and capture pairing code
         await asyncio.sleep(6)
         html = await page.get_content()
         result["html_snippet"] = html[:1000]
-        
+
         # Step 4: Extract pairing code
         for pattern in CODE_PATTERNS:
             match = re.search(pattern, html, re.IGNORECASE)
@@ -108,10 +108,10 @@ async def engage_zapero(ghost_number: str) -> dict:
                     break
         if not result["success"]:
             result["error"] = "No pairing code found in response"
-        
+
         await asyncio.sleep(1)
         await browser.quit()
     except Exception as e:
         result["error"] = str(e)
-    
+
     return result

@@ -1,6 +1,6 @@
 """Extract and analyze JavaScript payloads from scam platform pages."""
 import re
-import json
+
 from bs4 import BeautifulSoup
 
 ENDPOINT_PATTERNS = [

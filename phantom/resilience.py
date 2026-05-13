@@ -2,8 +2,9 @@
 import asyncio
 import random
 import time
-from enum import Enum
 from collections import defaultdict
+from enum import Enum
+
 
 class CircuitState(Enum):
     CLOSED = "closed"
@@ -20,7 +21,7 @@ class CircuitBreaker:
         self.failure_count = 0
         self.last_failure_time = 0
         self.success_count = 0
-    
+
     async def call(self, coro, *args, **kwargs):
         if self.state == CircuitState.OPEN:
             if time.time() - self.last_failure_time > self.recovery_timeout:
@@ -34,7 +35,7 @@ class CircuitBreaker:
         except Exception as e:
             self._on_failure()
             raise e
-    
+
     def _on_success(self):
         self.failure_count = 0
         if self.state == CircuitState.HALF_OPEN:
@@ -42,7 +43,7 @@ class CircuitBreaker:
             if self.success_count >= 2:
                 self.state = CircuitState.CLOSED
                 self.success_count = 0
-    
+
     def _on_failure(self):
         self.failure_count += 1
         self.last_failure_time = time.time()
@@ -94,25 +95,25 @@ class SessionRecovery:
         self.max_reconnect_attempts = 5
         self.base_reconnect_delay = 1.0
         self._state_marker = None
-    
+
     async def save_checkpoint(self, state_dict):
         """Save operational state for crash recovery."""
         self._state_marker = {
             "timestamp": time.time(),
             "state": state_dict
         }
-    
+
     def get_checkpoint(self):
         """Retrieve last saved state."""
         return self._state_marker
-    
+
     async def reconnect_cdp(self, connect_func, max_attempts=None):
         """WebSocket reconnection with exponential backoff."""
         max_attempts = max_attempts or self.max_reconnect_attempts
         for attempt in range(max_attempts):
             try:
                 return await connect_func()
-            except Exception as e:
+            except Exception:
                 delay = full_jitter(self.base_reconnect_delay, attempt, max_delay=30)
                 print(f"[Recovery] CDP reconnect attempt {attempt+1}/{max_attempts}, waiting {delay:.1f}s")
                 await asyncio.sleep(delay)
@@ -123,7 +124,7 @@ class Tripwire:
     def __init__(self):
         self.block_indicators = defaultdict(int)
         self.ban_threshold = 3
-    
+
     def record_response(self, ghost_number, status_code, body_text=""):
         """Analyze response for ban indicators."""
         ban_signals = [
@@ -139,7 +140,7 @@ class Tripwire:
             self.block_indicators[ghost_number] += 1
             return self.block_indicators[ghost_number] >= self.ban_threshold
         return False
-    
+
     def is_banned(self, ghost_number):
         return self.block_indicators.get(ghost_number, 0) >= self.ban_threshold
 

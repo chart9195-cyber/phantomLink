@@ -1,8 +1,6 @@
 """PhantomLink Phase 9 — Intelligence Dossier Generator"""
-import json
-import os
 from datetime import datetime
-from cryptography.fernet import Fernet
+
 
 class DossierGenerator:
     def __init__(self, decrypted_logs: list, attribution_data: dict, financial_data: dict):

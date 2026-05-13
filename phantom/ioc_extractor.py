@@ -1,8 +1,9 @@
 """PhantomLink Phase 9 — IOC Extractor (MISP-Compatible Export)"""
-import json
 import hashlib
+import json
 import re
 from datetime import datetime
+
 
 class IOCExtractor:
     def __init__(self):

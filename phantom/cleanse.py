@@ -1,9 +1,7 @@
 """PhantomLink Phase 10 — NIST 800-88 Aligned Secure Erasure Engine"""
 import os
-import sys
-import subprocess
-import time
 import shutil
+import subprocess
 
 # Target paths relative to Termux home
 TERMUX_HOME = os.path.expanduser("~")

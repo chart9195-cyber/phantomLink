@@ -3,6 +3,7 @@ import json
 import os
 import subprocess
 from datetime import datetime
+
 from cryptography.fernet import Fernet
 
 LOG_DIR = "logs"

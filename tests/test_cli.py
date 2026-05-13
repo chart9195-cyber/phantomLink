@@ -2,6 +2,7 @@
 import subprocess
 import sys
 
+
 def test_cli_help():
     result = subprocess.run(
         [sys.executable, "-m", "phantom.cli", "--help"],

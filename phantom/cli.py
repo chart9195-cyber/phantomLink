@@ -1,16 +1,14 @@
 """PhantomLink Unified CLI — Single Entry Point for All Operations"""
-import sys
 import asyncio
-from typing import Optional
 
 __version__ = "1.0.0"
 
 try:
     import rich_click as click
+    from rich import print as rprint
     from rich.console import Console
     from rich.panel import Panel
     from rich.table import Table
-    from rich import print as rprint
     RICH = True
 except ImportError:
     import click

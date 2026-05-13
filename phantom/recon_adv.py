@@ -1,11 +1,12 @@
 """PhantomLink Advanced Reconnaissance – Static JS Analysis for Endpoint Discovery"""
+import json
 import os
 import re
-import tempfile
 import subprocess
-import json
+import tempfile
+
 import requests
-from bs4 import BeautifulSoup
+
 
 class PlatformRecon:
     def __init__(self, target_url):
@@ -47,7 +48,7 @@ class PlatformRecon:
         ]
         found_urls = set()
         for js_file in self.js_files:
-            with open(js_file, 'r', errors='ignore') as f:
+            with open(js_file, errors='ignore') as f:
                 content = f.read()
                 for pattern in patterns:
                     matches = re.findall(pattern, content, re.IGNORECASE)
@@ -73,7 +74,7 @@ class PlatformRecon:
     def infer_payload_from_js(self):
         """Look for code that builds request body and extract keys."""
         for js_file in self.js_files:
-            with open(js_file, 'r', errors='ignore') as f:
+            with open(js_file, errors='ignore') as f:
                 content = f.read()
                 # Look for object with keys like code, phone, number
                 if self.confirm_endpoint and self.confirm_endpoint.split('/')[-1] in content:

@@ -1,7 +1,7 @@
 """PhantomLink Phase 10 — Panic Wipe Emergency Protocol"""
 import os
 import sys
-import time
+
 
 def panic_wipe(trigger_reason: str = "manual"):
     """Immediate self-destruct — destroys all PhantomLink data and exits."""
@@ -31,7 +31,7 @@ def check_trigger_conditions():
         return "duress_file_found"
 
     # Check for device mismatch (already handled by deadswitch)
-    from phantom.deadswitch import is_authorized_device, EXPECTED_FINGERPRINT_FILE
+    from phantom.deadswitch import EXPECTED_FINGERPRINT_FILE, is_authorized_device
     if os.path.exists(EXPECTED_FINGERPRINT_FILE) and not is_authorized_device():
         return "device_mismatch"
 

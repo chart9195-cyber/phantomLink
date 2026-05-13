@@ -1,6 +1,5 @@
 """PhantomLink Phase 9 — Financial Tracing Engine"""
 import re
-import json
 from collections import defaultdict
 
 MOBILE_MONEY_PATTERNS = [

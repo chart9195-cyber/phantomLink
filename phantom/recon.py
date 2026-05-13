@@ -1,5 +1,6 @@
 """PhantomLink Target Reconnaissance Module (Phase 4 - SSRF-hardened)"""
 import re
+
 from curl_cffi import requests as cffi_requests
 
 ENDPOINT_PATTERNS = [

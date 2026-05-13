@@ -1,6 +1,7 @@
 """Test ghost number generation."""
 from phantom.number_gen import generate_ghost_number
 
+
 def test_generate_ghost_number():
     number, country = generate_ghost_number()
     assert number.startswith("+")

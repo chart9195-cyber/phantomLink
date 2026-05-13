@@ -1,7 +1,6 @@
 """PhantomLink Proxy Rotation Module"""
 import subprocess
 import time
-import os
 
 TOR_SOCKS = "socks5h://127.0.0.1:9050"
 TOR_RUNNING = False
@@ -19,7 +18,7 @@ def ensure_tor():
             return True
     except Exception:
         pass
-    
+
     try:
         subprocess.Popen(["tor", "--daemon"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         time.sleep(5)

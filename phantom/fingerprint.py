@@ -1,5 +1,6 @@
 """PhantomLink Mobile Fingerprint Randomizer (Phase 4)"""
 import random
+
 from fake_useragent import UserAgent
 
 DEVICE_PROFILES = [

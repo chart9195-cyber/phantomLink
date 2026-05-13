@@ -1,8 +1,9 @@
 """PhantomLink Phase 8 — Universal Platform Adapter"""
 import re
 from dataclasses import dataclass, field
-from typing import Optional
+
 import requests
+
 
 @dataclass
 class Platform:
@@ -13,7 +14,7 @@ class Platform:
         r'([A-Z0-9]{4}[-][A-Z0-9]{4})',
         r'([A-Z0-9]{8})',
     ])
-    confirm_endpoint: Optional[str] = None
+    confirm_endpoint: str | None = None
     api_patterns: list = field(default_factory=lambda: [
         r'["\'](https?://[^"\']*(?:confirm|validate|verify|check|status|link)[^"\']*)["\']',
         r'fetch\(["\']([^"\']*(?:confirm|validate|verify|check|status|link)[^"\']*)["\']',

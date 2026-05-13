@@ -2,6 +2,7 @@
 import logging
 import sys
 
+
 def setup_logging(level: str = "INFO") -> logging.Logger:
     logger = logging.getLogger("phantomlink")
     logger.setLevel(getattr(logging, level.upper(), logging.INFO))

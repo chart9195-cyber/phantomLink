@@ -1,5 +1,9 @@
 """PhantomLink Phase 6: Live-Fire Pre-Flight Validator"""
-import subprocess, sys, os, json, asyncio
+import asyncio
+import os
+import subprocess
+import sys
+
 
 def run(cmd):
     try:
@@ -10,7 +14,7 @@ def run(cmd):
 async def test_zendriver_connection():
     """Verify Zendriver can connect to chrome-headless CDP endpoint."""
     try:
-        from zendriver import start, Config
+        from zendriver import Config, start
         config = Config(host="127.0.0.1", port=9222, headless=False)
         browser = await start(config=config)
         await browser.stop()
@@ -23,34 +27,34 @@ async def preflight():
     print("  PhantomLink Phase 6 — Live-Fire Pre-Flight")
     print("=" * 50)
     checks = {}
-    
+
     # Basic env
     checks["termux"] = os.path.exists("/data/data/com.termux")
     print(f"  {'✅' if checks['termux'] else '❌'} Termux")
-    
+
     # chrome-headless
     ok, out, _ = run("chrome-headless status")
     checks["chrome_headless"] = ok and "running" in out.lower()
     print(f"  {'✅' if checks['chrome_headless'] else '❌'} chrome-headless: {out[:40] if ok else 'NOT RUNNING'}")
-    
+
     # Python deps
     for dep in ["zendriver", "curl_cffi", "cryptography", "beautifulsoup4", "fake_useragent"]:
         ok, out, _ = run(f"python -c 'import {dep}' 2>/dev/null")
         checks[f"py_{dep}"] = ok
         if not ok:
             print(f"  ❌ Python dep missing: {dep}")
-    
+
     # Node & Baileys
     ok, out, _ = run("node -e \"require('@whiskeysockets/baileys'); console.log('OK')\"")
     checks["baileys"] = ok
     print(f"  {'✅' if ok else '❌'} Baileys")
-    
+
     # Zendriver CDP connection test
     if checks.get("chrome_headless"):
         ok, msg = await test_zendriver_connection()
         checks["zendriver_cdp"] = ok
         print(f"  {'✅' if ok else '❌'} Zendriver CDP: {msg}")
-    
+
     # Target reachability
     import requests
     try:
@@ -60,7 +64,7 @@ async def preflight():
     except:
         checks["target_zapero"] = False
         print("  ❌ Zapero unreachable")
-    
+
     all_ok = all(checks.values())
     print("=" * 50)
     print(f"  Pre-Flight: {'✅ PASSED' if all_ok else '❌ ISSUES FOUND'}")

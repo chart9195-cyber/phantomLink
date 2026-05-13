@@ -1,5 +1,7 @@
 """Multi-provider SMS number fetcher — races up to 6 providers simultaneously."""
-import concurrent.futures, requests, json
+import concurrent.futures
+
+import requests
 
 PROVIDERS = {
     "receivesms_live": "https://api.receivesms.live/v1/get_number?country=US&service=whatsapp",

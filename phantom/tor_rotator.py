@@ -1,8 +1,6 @@
 """PhantomLink Phase 7 — Tor Circuit Rotation Engine"""
-import asyncio
 import subprocess
 import time
-import random
 
 TOR_SOCKS_PROXY = "socks5h://127.0.0.1:9050"
 TOR_CONTROL_PORT = 9051
@@ -41,10 +39,10 @@ def rotate_circuit():
     global _circuit_count, _last_rotation
     if time.time() - _last_rotation < MIN_ROTATION_INTERVAL:
         return False
-    
+
     if not STEM_AVAILABLE:
         return _rotate_via_subprocess()
-    
+
     try:
         with Controller.from_port(port=TOR_CONTROL_PORT) as controller:
             controller.authenticate()

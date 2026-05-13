@@ -6,7 +6,7 @@ def step5_smart_exploit(self):
     self._header("STEP 5: SMART SPOOF")
     print()
     self._info("Attempting exploit using discovered API endpoint...")
-    
+
     from phantom.recon_adv import PlatformRecon
     # If we didn't capture any endpoint via browser spy, run static recon
     if not self.session.get("captured_endpoint"):
@@ -20,7 +20,7 @@ def step5_smart_exploit(self):
             return
         else:
             self._warning("Static recon failed. Trying captured endpoint fallback...")
-    
+
     # Fallback to captured endpoint if available (original logic)
     endpoint = self.session.get("captured_endpoint")
     # ... rest of token-based logic ...

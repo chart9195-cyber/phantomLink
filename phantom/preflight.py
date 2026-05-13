@@ -1,5 +1,8 @@
 """PhantomLink Pre-Flight Checklist — Phase 5"""
-import subprocess, os, sys
+import os
+import subprocess
+import sys
+
 
 def check(name, ok):
     print(f"  {'✅' if ok else '❌'} {name}")
@@ -19,11 +22,11 @@ def preflight():
     all_ok = True
     all_ok &= check("Termux", os.path.exists("/data/data/com.termux"))
     ok, out, _ = run("which python")
-    all_ok &= check("Python: {}".format(out), ok)
+    all_ok &= check(f"Python: {out}", ok)
     ok, out, _ = run("which node")
-    all_ok &= check("Node.js: {}".format(out), ok)
+    all_ok &= check(f"Node.js: {out}", ok)
     ok, out, _ = run("which tor")
-    all_ok &= check("Tor: {}".format(out), ok)
+    all_ok &= check(f"Tor: {out}", ok)
     ok, out, _ = run("chrome-headless status")
     all_ok &= check("chrome-headless: {}".format(out[:50] if ok else "NOT RUNNING"), ok)
     ok, out, _ = run("pip show curl-cffi 2>/dev/null | grep Version")

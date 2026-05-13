@@ -1,7 +1,7 @@
 """PhantomLink Phase 7 — Human Behavior Simulation Layer"""
 import asyncio
 import random
-import math
+
 
 def gaussian_delay(mean_ms, std_ms=0.3):
     """Gaussian-distributed delay. More realistic than uniform."""
@@ -82,10 +82,10 @@ async def simulate_presence(page):
         y = random.randint(100, viewport['h'] - 100)
         await page.mouse.move(x, y, steps=random.randint(15, 35))
         await asyncio.sleep(gaussian_delay(200, 0.5))
-    
+
     # 2. Small scroll
     await human_scroll(page, delta_y=random.randint(100, 400))
     await asyncio.sleep(gaussian_delay(500, 0.3))
-    
+
     # 3. Brief reading pause simulation
     await asyncio.sleep(human_delay(800, 2500))

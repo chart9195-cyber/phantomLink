@@ -37,6 +37,7 @@ dependencies = [
     "luhnpy>=0.1.0",
     "websockets>=14.0.0",
     "aiohttp>=3.11.0",
+    "click>=8.1",
 ]
 
 [project.optional-dependencies]

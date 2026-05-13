@@ -1,5 +1,4 @@
 """Test platform catalog."""
-import pytest
 from phantom.platforms import get_platform, list_platforms, PLATFORM_CATALOG
 
 def test_catalog_has_targets():

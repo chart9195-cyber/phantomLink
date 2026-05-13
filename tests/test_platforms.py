@@ -1,5 +1,4 @@
 """Test platform catalog."""
-from phantom.platforms import get_platform, list_platforms, PLATFORM_CATALOG
 
 def test_catalog_has_targets():
     assert len(PLATFORM_CATALOG) >= 8

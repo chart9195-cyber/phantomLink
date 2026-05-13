@@ -2,7 +2,10 @@
 import re
 from dataclasses import dataclass, field
 from typing import Optional
-from curl_cffi import requests as cffi_requests
+try:
+    from curl_cffi import requests as cffi_requests
+except ImportError:
+    import requests as cffi_requests
 
 @dataclass
 class Platform:

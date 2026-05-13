@@ -1,5 +1,4 @@
 """Test ghost number generation."""
-import pytest
 from phantom.number_gen import generate_ghost_number
 
 def test_generate_ghost_number():

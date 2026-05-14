@@ -12,7 +12,14 @@ def run(cmd, shell=False):
     except Exception as e:
         return False, "", str(e)
 
+import os
+import subprocess
+
 def check_termux():
+    return os.path.isdir("/data/data/com.termux")
+    # Robust Termux detection
+    ok = os.path.isdir('/data/data/com.termux')
+    if ok: return True
     ok, out, _ = run("echo $TERMUX_VERSION", shell=True)  # nosec B604
     return ok and len(out) > 0
 

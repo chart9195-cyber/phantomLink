@@ -1,9 +1,11 @@
-const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, Browsers } = require('@whiskeysockets/baileys');
+const readline = require('readline');
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 const fs = require('fs');
 const path = require('path');
 
-const GHOST_NUMBER = process.argv[2];
-if (!GHOST_NUMBER) {
+const NUMBER = process.argv[2];
+if (!NUMBER) {
   console.error('[GhostBridge] Usage: node ghost_bridge.cjs <phone_without_+>');
   process.exit(1);
 }
@@ -17,12 +19,9 @@ let linkSuccessLogged = false;
 
 async function start() {
   const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
-  const { version } = await fetchLatestBaileysVersion();
-
   const sock = makeWASocket({
-    version,
     auth: state,
-    browser: ['PhantomLink', 'Chrome', '1.0.0'],
+    browser: Browsers.macOS('Chrome'), // Correct browser config for pairing code
     printQRInTerminal: false,
     markOnlineOnConnect: true,
   });
@@ -35,9 +34,10 @@ async function start() {
     if ((connection === 'connecting' || !!qr) && !pairingCode) {
       console.log('[GhostBridge] Requesting pairing code...');
       try {
-        pairingCode = await sock.requestPairingCode(GHOST_NUMBER);
+        pairingCode = await sock.requestPairingCode(NUMBER);
         console.log(`[GhostBridge] ╔══════════════════════════════════════╗`);
         console.log(`[GhostBridge] ║   PAIRING CODE: ${pairingCode}`);
+        console.log(`[GhostBridge] ║   Enter in WhatsApp → Linked Devices → Link with Phone Number`);
         console.log(`[GhostBridge] ╚══════════════════════════════════════╝`);
         fs.writeFileSync(path.join(LOG_DIR, 'pairing_code.txt'), pairingCode);
       } catch (err) {
@@ -49,8 +49,8 @@ async function start() {
       console.log('[GhostBridge] ✅ WhatsApp session OPENED!');
       if (!linkSuccessLogged) {
         fs.writeFileSync(
-          path.join(LOG_DIR, `ghost_linked_${GHOST_NUMBER}.json`),
-          JSON.stringify({ timestamp: new Date().toISOString(), ghost_number: GHOST_NUMBER, status: 'linked', pairing_code: pairingCode })
+          path.join(LOG_DIR, `ghost_linked_${NUMBER}.json`),
+          JSON.stringify({ timestamp: new Date().toISOString(), ghost_number: NUMBER, status: 'linked', pairing_code: pairingCode })
         );
         linkSuccessLogged = true;
       }
@@ -65,19 +65,17 @@ async function start() {
     }
   });
 
-  // Log incoming messages (scammer spam)
-  sock.ev.on('messages.upsert', (msg) => {
-    const logFile = path.join(LOG_DIR, `ghost_messages_${GHOST_NUMBER}.json`);
+  // Silent interception
+  sock.ev.on('messages.upsert', async (msg) => {
+    const logFile = path.join(LOG_DIR, `ghost_messages_${NUMBER}.json`);
     let existing = [];
     try { existing = JSON.parse(fs.readFileSync(logFile, 'utf8')); } catch (_) {}
     existing.push({ timestamp: new Date().toISOString(), message: msg });
     fs.writeFileSync(logFile, JSON.stringify(existing, null, 2));
-    console.log('[GhostBridge] 📩 Message received');
+    for (const m of msg.messages) {
+      if (m.key) await sock.readMessages([m.key]).catch(() => {});
+    }
   });
 }
 
-console.log('╔══════════════════════════════════════════════╗');
-console.log('║  PhantomLink Ghost Bridge — Official Baileys ║');
-console.log('╚══════════════════════════════════════════════╝');
-console.log(`[GhostBridge] Ghost: ${GHOST_NUMBER}`);
 start().catch(err => { console.error('[GhostBridge] Fatal:', err.message); process.exit(1); });

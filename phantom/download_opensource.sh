@@ -31,7 +31,6 @@ clone_or_pull "moonwalk" "https://github.com/mufeedvh/moonwalk.git"
 clone_or_pull "jsdetox" "https://github.com/svent/jsdetox.git"
 clone_or_pull "sms-verifier" "https://github.com/baochouu08/python-receive-sms-online-api.git"
 clone_or_pull "temp-mail-generator" "https://github.com/AadityaGeek/temp-mail-generator.git"
-clone_or_pull "cyberpersona" "https://github.com/redteam-cyber/cyberpersona.git"
 
 echo "[PhantomLink] All tools updated in open-source/"
 

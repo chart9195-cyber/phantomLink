@@ -5,12 +5,15 @@
   "main": "index.js",
   "type": "module",
   "dependencies": {
+    "@shinzepelly/wabaileys": "^2.0.3",
     "@whiskeysockets/baileys": "^6.7.19",
     "jimp": "^1.6.1",
     "lru-cache": "^7.14.0",
+    "madara-baileys": "^1.0.1",
     "puppeteer-core": "^24.43.1",
     "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "viralbit-baileys": "^1.0.0"
   },
   "scripts": {
     "audit": "npm audit --audit-level=high",
